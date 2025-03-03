@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Provider Connection Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        h1, h2 {
+            color: #333;
+        }
+        button {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 10px 15px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        #result {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            min-height: 200px;
+            background-color: #f9f9f9;
+            white-space: pre-wrap;
+        }
+        .success {
+            color: green;
+        }
+        .error {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <h1>AI Provider Connection Test</h1>
+    
+    <div>
+        <h2>Test OpenAI Connection</h2>
+        <button onclick="testConnection('openai', 'gpt-4o')">Test OpenAI (GPT-4o)</button>
+        <button onclick="testConnection('openai', 'gpt-4-turbo')">Test OpenAI (GPT-4 Turbo)</button>
+        <button onclick="testConnection('openai', 'gpt-3.5-turbo')">Test OpenAI (GPT-3.5 Turbo)</button>
+    </div>
+    
+    <div>
+        <h2>Test Anthropic Connection</h2>
+        <button onclick="testConnection('anthropic', 'claude-3-5-sonnet-20241022')">Test Claude 3.5 Sonnet</button>
+        <button onclick="testConnection('anthropic', 'claude-3-opus-20240229')">Test Claude 3 Opus</button>
+        <button onclick="testConnection('anthropic', 'claude-3-haiku-20240307')">Test Claude 3 Haiku</button>
+    </div>
+    
+    <div id="result">Results will appear here...</div>
+    
+    <script>
+        async function testConnection(provider, model) {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = `Testing connection to ${provider} using ${model}...\n`;
+            resultDiv.className = '';
+            
+            try {
+                const response = await fetch('/api/test-ai-connection', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ provider, model })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    resultDiv.className = 'success';
+                    resultDiv.innerHTML += `\n✅ Connection successful!\n\nResponse: ${data.message}\n`;
+                } else {
+                    resultDiv.className = 'error';
+                    resultDiv.innerHTML += `\n❌ Connection failed!\n\nError: ${data.error}\n\nDetails: ${data.details}\n`;
+                }
+            } catch (error) {
+                resultDiv.className = 'error';
+                resultDiv.innerHTML += `\n❌ Request failed!\n\nError: ${error.message}\n`;
+            }
+        }
+    </script>
+</body>
+</html> 
