@@ -41,7 +41,7 @@ To run the application in development mode with hot reloading:
 docker-compose up dev
 ```
 
-The application will be available at http://localhost:3000
+The application will be available at http://localhost:5000
 
 ### Production Mode
 
@@ -63,6 +63,48 @@ docker build --target development -t meta-prompt-arena:dev .
 docker build --target production -t meta-prompt-arena:prod .
 ```
 
+## Deploying on Contabo VPS
+
+This project includes scripts for easy deployment on a Contabo VPS (IP: 94.72.120.28) or any Linux-based server.
+
+### One-Command Deployment
+
+1. Clone the repository on your VPS:
+   ```bash
+   git clone https://your-repository-url.git
+   cd meta-prompt-arena
+   ```
+
+2. Run the setup script:
+   ```bash
+   chmod +x setup-server.sh
+   ./setup-server.sh
+   ```
+
+This script will:
+- Install Docker and Docker Compose
+- Set up security tools (UFW firewall and Fail2ban)
+- Configure the environment
+- Deploy the application
+- Set up automatic health checks and updates
+
+### Available Deployment Scripts
+
+1. **`setup-server.sh`**: Complete server setup including security and application deployment
+2. **`deploy.sh`**: Just deploys the application with Docker
+3. **`health-check.sh`**: Monitors application health
+4. **`setup-nginx-ssl.sh`**: Sets up Nginx as a reverse proxy with HTTPS
+
+### Adding HTTPS with Let's Encrypt
+
+If you have a domain name pointed to your VPS, you can set up HTTPS:
+
+```bash
+sudo ./setup-nginx-ssl.sh yourdomain.com your@email.com
+```
+
+For more detailed deployment information, see [deploy-readme.md](deploy-readme.md).
+
 ## Usage Guide
 
 1. **Base Prompt**: Start by entering a simple description of the AI assistant you want to create
@@ -81,6 +123,7 @@ If you encounter issues:
 2. Ensure your API keys are correctly set in the .env file
 3. Make sure Docker is running with sufficient resources
 4. Try restarting the containers: `docker-compose restart`
+5. For deployment issues, check the health check logs: `cat health-check.log`
 
 ## Development Notes
 
